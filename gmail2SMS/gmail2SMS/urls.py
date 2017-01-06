@@ -14,8 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from django.contrib import admin
+from gmail_polling import views
+# from django.contrib import admin
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    # url(r'^admin/', admin.site.urls),
+    # url(r'^$', views.www_index, name='www_index'),
+    # url(r'^no-loop$', views.www_index_no_loop, name='www_index_no_loop'),
 ]
