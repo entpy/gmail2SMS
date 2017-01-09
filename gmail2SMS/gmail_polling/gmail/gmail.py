@@ -143,7 +143,6 @@ class Gmail():
         box = self.mailbox(mailbox_name)
         return box.mail(**kwargs)
 
-    
     def copy(self, uid, to_mailbox, from_mailbox=None):
         if from_mailbox:
             self.use_mailbox(from_mailbox)
@@ -159,7 +158,6 @@ class Gmail():
                 messages[uid].parse(raw_message)
 
         return messages
-
 
     def labels(self, require_unicode=False):
         keys = self.mailboxes.keys()

@@ -10,16 +10,29 @@ logger = logging.getLogger(__name__)
 
 class GmailPolling():
 
-    # https://github.com/charlierguo/gmail
-    gmail_imap = gmail.login(local_settings.c1, local_settings.c2)
+    gmail_imap = None
 
     def __init__(self):
+        self.init_connection()
         return None
 
-    def loop(self):
-        logger.info("controllo la mail in data: " + str(date.today()))
-        self.get_unread_email()
+    def init_connection(self):
+        """Function to start an IMAP connection"""
+        # https://github.com/charlierguo/gmail
+        self.gmail_imap = gmail.login(local_settings.c1, local_settings.c2)
+        return True
 
+    def loop(self):
+        """Function performed every 'x' seconds by Twisted"""
+        logger.info("controllo la mail in data: " + str(date.today()))
+        try:
+            self.get_unread_email()
+        except self.gmail_imap.imap.abort, e:
+            # probabilmente un timeout della connessione, provo a riconnettermi (logout + nuova connessione)
+            logger.error("@@ Connessione scaduta, provo a riconnettermi senza interrompere il loop di Twisted: " + str(e))
+            self.gmail_imap.logout()
+            self.init_connection()
+            # TODO: mandare una mail con traccia dell'accaduto
         return True
 
     def get_unread_email(self):
@@ -43,7 +56,6 @@ class GmailPolling():
         self.gmail_imap.mailboxes = {}
         self.gmail_imap.current_mailbox = None
         self.gmail_imap.fetch_mailboxes()
-
         return True
 
     def send_sms(self, text):
@@ -59,12 +71,10 @@ class GmailPolling():
               logger.info('Remaining balance is ', response['remaining-balance'])
             else:
               logger.error('SMS sending error: ', response['error-text'])
-
         return True
 
     def periodic_task_crashed(self, exception):
         """Loop error"""
         logger.error("Errore nel loop (fermare l'app, rilanciarla e capire il misfatto): " + str(exception))
         # TODO: mandare sms e email per notificare l'errore
-
         return True
