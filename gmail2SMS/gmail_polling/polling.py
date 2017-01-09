@@ -65,5 +65,6 @@ class GmailPolling():
     def periodic_task_crashed(self, exception):
         """Loop error"""
         logger.error("Errore nel loop (fermare l'app, rilanciarla e capire il misfatto): " + str(exception))
+        # TODO: mandare sms e email per notificare l'errore
 
         return True

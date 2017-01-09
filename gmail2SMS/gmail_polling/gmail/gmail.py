@@ -1,5 +1,6 @@
 import re
 import imaplib
+import socket
 
 from mailbox import Mailbox
 from utf import encode as encode_utf7, decode as decode_utf7
@@ -26,7 +27,6 @@ class Gmail():
         self.mailboxes = {}
         self.current_mailbox = None
 
-
         # self.connect()
 
 
@@ -37,6 +37,9 @@ class Gmail():
         #     if raise_errors:
         #         raise Exception('Connection failure.')
         #     self.imap = None
+
+        # imposto un timeout per nuove connessioni
+        socket.setdefaulttimeout(10)
 
         self.imap = imaplib.IMAP4_SSL(self.GMAIL_IMAP_HOST, self.GMAIL_IMAP_PORT)
 
