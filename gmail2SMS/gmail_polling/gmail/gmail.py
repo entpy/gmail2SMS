@@ -39,7 +39,7 @@ class Gmail():
         #     self.imap = None
 
         # imposto un timeout per nuove connessioni
-        socket.setdefaulttimeout(10)
+        socket.setdefaulttimeout(1)
 
         self.imap = imaplib.IMAP4_SSL(self.GMAIL_IMAP_HOST, self.GMAIL_IMAP_PORT)
 
