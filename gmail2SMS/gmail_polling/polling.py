@@ -46,6 +46,7 @@ class GmailPolling():
             # email subject
             email_subject = email.subject
             logger.info("email trovata: " + str(email_subject))
+            email.read()
             # se c'è un allarme o un allarme è stato disattivato
             if email_subject.find("Allarme") > -1 or email_subject.find("Fin.All.") > -1:
                 # marco la mail come letta
