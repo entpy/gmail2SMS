@@ -24,8 +24,9 @@ class GmailPolling():
 
     def loop(self):
         """Function performed every 'x' seconds by Twisted"""
+        logger.info("check email")
+        """
         try:
-            logger.info("check email")
             self.get_unread_email()
         except self.gmail_imap.imap.abort, e:
             # probabilmente un timeout della connessione, provo a riconnettermi (logout + nuova connessione)
@@ -33,6 +34,7 @@ class GmailPolling():
             self.gmail_imap.logout()
             self.init_connection()
             # TODO: mandare una mail con traccia dell'accaduto
+        """
         return True
 
     def get_unread_email(self):
