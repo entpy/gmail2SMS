@@ -37,22 +37,19 @@ class GmailPolling():
 
     def get_unread_email(self):
         """List of unread email"""
-        # prelevo l'elenco di email in base a determinati criteri TODO: riabilitare il primo
-        # emails = self.gmail_imap.inbox().mail(on=date.today(), unread=True, sender=local_settings.sender)
-        emails = self.gmail_imap.inbox().mail(on=date.today(), unread=True)
+        # prelevo l'elenco di email in base a determinati criteri
+        emails = self.gmail_imap.inbox().mail(on=date.today(), unread=True, sender=local_settings.sender)
         for email in emails:
             # prelevo i dati per ogni singola email (oggetto, testo, ...)
             email.fetch()
             # email subject
             email_subject = email.subject
-            logger.info("email trovata: " + str(email_subject))
-            email.read()
             # se c'è un allarme o un allarme è stato disattivato
             if email_subject.find("Allarme") > -1 or email_subject.find("Fin.All.") > -1:
                 # marco la mail come letta
                 email.read()
-                # invio l'sms TODO: riabilitare
-                # self.send_sms(text=email_subject)
+                # invio l'sms
+                self.send_sms(text=email_subject)
 
         # fix per far riscaricare i messaggi della inbox, la libreria cachava tutto e se
         # arrivava un nuovo messaggio non veniva tirato giù, ho solo resettato alcuni campi
