@@ -22,7 +22,7 @@ class GmailPollingConfig(AppConfig):
         # http://stackoverflow.com/questions/474528/what-is-the-best-way-to-repeatedly-execute-a-function-every-x-seconds-in-python
         background_loop = LoopingCall(GmailPolling_obj.loop)
         # avvia subito e quindi ogni secondo
-        reactor = background_loop.start(1, now=True)
+        reactor = background_loop.start(0, now=True)
         # callback in caso di errore
         reactor.addErrback(GmailPolling_obj.periodic_task_crashed)
 
