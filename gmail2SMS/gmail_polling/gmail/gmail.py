@@ -4,6 +4,9 @@ from mailbox import Mailbox
 from utf import encode as encode_utf7, decode as decode_utf7
 from exceptions import *
 
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
 class Gmail():
     # GMail IMAP defaults
     GMAIL_IMAP_HOST = 'imap.gmail.com'
