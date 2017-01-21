@@ -3,7 +3,7 @@
 from gmail_polling import gmail
 from gmail2SMS import local_settings
 from datetime import date
-import datetime, logging, json, nexmo, time
+import socket, datetime, logging, json, nexmo, time
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -32,7 +32,10 @@ class GmailPolling():
             logger.error("@@ Connessione scaduta, provo a riconnettermi senza interrompere il loop di Twisted: " + str(e))
             self.gmail_imap.logout()
             self.init_connection()
-            # TODO: mandare una mail con traccia dell'accaduto
+        except socket.error as e:
+            logger.error("@@ Errore del socket, provo a riconnettermi senza interrompere il loop di Twisted: " + str(e))
+            self.gmail_imap.logout()
+            self.init_connection()
         return True
 
     def get_unread_email(self):
