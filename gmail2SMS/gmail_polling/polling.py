@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 class GmailPolling():
 
     gmail_imap = None
+    max_socket_error_retry = 3
+    current_retry = 0
 
     def __init__(self):
         self.init_connection()
@@ -25,7 +27,7 @@ class GmailPolling():
     def loop(self):
         """Function performed every 'x' seconds by Twisted"""
         try:
-            logger.info("check email")
+            logger.info("check email, retry: " + str(self.current_retry) + " of " + str(self.max_socket_error_retry))
             self.get_unread_email()
         except self.gmail_imap.imap.abort, e:
             # probabilmente un timeout della connessione, provo a riconnettermi (logout + nuova connessione)
@@ -34,8 +36,13 @@ class GmailPolling():
             self.init_connection()
         except socket.error as e:
             logger.error("@@ Errore del socket, provo a riconnettermi senza interrompere il loop di Twisted: " + str(e))
-            self.gmail_imap.logout()
-            self.init_connection()
+            if self.current_retry < self.max_socket_error_retry:
+                self.gmail_imap.logout()
+                self.init_connection()
+                self.current_retry += 1
+            else:
+                # ho superato i retry disponibili, tiro l'errore al livello superiore
+                raise
         return True
 
     def get_unread_email(self):
